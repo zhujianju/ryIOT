@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.iot.device.mapper.ConDeviceMapper">
+    
+    <resultMap type="ConDevice" id="ConDeviceResult">
+        <result property="id"    column="id"    />
+        <result property="typeid"    column="typeId"    />
+        <result property="paramid"    column="paramid"    />
+        <result property="productkey"    column="productKey"    />
+        <result property="devicename"    column="deviceName"    />
+        <result property="devicesecret"    column="deviceSecret"    />
+        <result property="saleactivate"    column="saleActivate"    />
+    </resultMap>
+
+    <sql id="selectConDeviceVo">
+        select id, typeId, paramid, productKey, deviceName, deviceSecret, saleActivate from con_device
+    </sql>
+
+    <select id="selectConDeviceList" parameterType="ConDevice" resultMap="ConDeviceResult">
+        <include refid="selectConDeviceVo"/>
+        <where>  
+            <if test="typeid != null  and typeid != ''"> and typeId = #{typeid}</if>
+            <if test="devicename != null  and devicename != ''"> and deviceName like concat('%', #{devicename}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectConDeviceById" parameterType="Long" resultMap="ConDeviceResult">
+        <include refid="selectConDeviceVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertConDevice" parameterType="ConDevice" useGeneratedKeys="true" keyProperty="id">
+        insert into con_device
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="typeid != null  and typeid != ''">typeId,</if>
+            <if test="paramid != null ">paramid,</if>
+            <if test="productkey != null  and productkey != ''">productKey,</if>
+            <if test="devicename != null  and devicename != ''">deviceName,</if>
+            <if test="devicesecret != null  and devicesecret != ''">deviceSecret,</if>
+            <if test="saleactivate != null ">saleActivate,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="typeid != null  and typeid != ''">#{typeid},</if>
+            <if test="paramid != null ">#{paramid},</if>
+            <if test="productkey != null  and productkey != ''">#{productkey},</if>
+            <if test="devicename != null  and devicename != ''">#{devicename},</if>
+            <if test="devicesecret != null  and devicesecret != ''">#{devicesecret},</if>
+            <if test="saleactivate != null ">#{saleactivate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConDevice" parameterType="ConDevice">
+        update con_device
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="typeid != null  and typeid != ''">typeId = #{typeid},</if>
+            <if test="paramid != null ">paramid = #{paramid},</if>
+            <if test="productkey != null  and productkey != ''">productKey = #{productkey},</if>
+            <if test="devicename != null  and devicename != ''">deviceName = #{devicename},</if>
+            <if test="devicesecret != null  and devicesecret != ''">deviceSecret = #{devicesecret},</if>
+            <if test="saleactivate != null ">saleActivate = #{saleactivate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConDeviceById" parameterType="Long">
+        delete from con_device where id = #{id}
+    </delete>
+
+    <delete id="deleteConDeviceByIds" parameterType="String">
+        delete from con_device where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
